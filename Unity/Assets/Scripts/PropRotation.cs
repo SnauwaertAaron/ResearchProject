@@ -9,11 +9,11 @@ public class PropRotation : MonoBehaviour
     void Update()
     {
         if (direction == 1){
-            transform.Rotate(0f, 200f, 0f, Space.Self);
+            transform.Rotate(0f, 1000f, 0f, Space.Self);
 
         }
         else{
-            transform.Rotate(0f, 200f, 0f, Space.Self);
+            transform.Rotate(0f, -1000f, 0f, Space.Self);
         }
     }
 }

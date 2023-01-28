@@ -22,17 +22,12 @@ public class SensorData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Execute function every x seconds
         InvokeRepeating("WriteToFile", 0.0f, 0.5f);
-        InvokeRepeating("GenrateSensorData", 0.0f, 1f);
+        InvokeRepeating("GenerateSensorData", 0.0f, 1f);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    // Creating function to check key-value already exists and  add or alter (error is thrown when usisng dict.Add when key-value already exists)
+    // Creating functions to check key-value already exists and  add or alter (error is thrown when usisng dict.Add when key-value already exists)
     void AddFloatToDictionary(string key, float value)
     {
         if (sensorData.ContainsKey(key))
@@ -50,19 +45,19 @@ public class SensorData : MonoBehaviour
 
     int CalculateSignal(int distance)
     {
-        if (0 <= distance && distance < 1000)
+        if (0 <= distance && distance < 250)
             return 5;
 
-        else if (1000 <= distance && distance < 2000)
+        else if (250 <= distance && distance < 500)
             return 4;
 
-        else if (2000 <= distance && distance < 3000)
+        else if (500 <= distance && distance < 750)
             return 3;
 
-        else if (3000 <= distance && distance < 4000)
+        else if (750 <= distance && distance < 1000)
             return 2;
 
-        else if (4000 <= distance && distance < 5000)
+        else if (1000 <= distance && distance < 1250)
             return 1;
 
         else
@@ -99,12 +94,12 @@ public class SensorData : MonoBehaviour
 
     float generateWindspeed()
     {
-        float randwindspeed = (float)rd.NextDouble()/10;
+        float randwindspeed = (float)rd.NextDouble()/50;
         int randInt = rd.Next(0, 2);
         if (randInt == 0)
-            windSpeed -= randwindspeed;
-        else
             windSpeed += randwindspeed;
+        else
+            windSpeed -= randwindspeed;
         return windSpeed;
     }
 
@@ -114,7 +109,7 @@ public class SensorData : MonoBehaviour
     float batteryPercentage = 100.00f;
     float altitude = 0.00f;
     float windSpeed = 3f;
-    void GenrateSensorData()
+    void GenerateSensorData()
     {
         // Creating a random to make the battery drainage non linear.
         float randBatteryPerc = rd.Next(0, 3);
@@ -131,16 +126,18 @@ public class SensorData : MonoBehaviour
         float speed = (float)Math.Round(drone.velocity.magnitude / 20, 2);
         AddFloatToDictionary("speed", speed);
 
+        // Find position of remote and calculate the distance to drone
         float distanceToRemote = Vector3.Distance(GameObject.FindGameObjectWithTag("Remote").transform.position, drone.position);
         distanceToRemote = (float)Math.Round(distanceToRemote / 100, 2);
         AddFloatToDictionary("distanceToRemote", distanceToRemote);
 
         AddFloatToDictionary("signalStrength", CalculateSignal((int)Math.Floor(distanceToRemote)));
 
+        // get the angle the drone is at to calculate the cardinal direction
         float facing = drone.transform.eulerAngles.y;
         AddStringToDictionary("cardinalDirection", CalculateCardinalDirection(facing));
 
-        AddFloatToDictionary("windspeed", (float)Math.Round(generateWindspeed(), 2));
+        AddFloatToDictionary("windSpeed", (float)Math.Round(generateWindspeed(), 2));
 
         sensorDataJson = JsonConvert.SerializeObject(sensorData);
         Debug.Log(sensorDataJson);
@@ -149,15 +146,11 @@ public class SensorData : MonoBehaviour
     string required = System.IO.File.ReadAllText(@"D:\School\SEM7\ResearchProject\ResearchProjectSimulation\Assets\Resources\EK.txt");
     void WriteToFile()
     {
-        // Encrypt the plain text and write it to a file
+        // Encrypt the plain text and write it to the sensor file
         byte[] encrypted = EncryptStringToBytes_Aes(sensorDataJson, required);
         File.WriteAllBytes("Assets/Resources/SensorData.bin", encrypted);
     }
 
-    public string GetSensorDataJson()
-    {
-        return sensorDataJson;
-    }
     static byte[] EncryptStringToBytes_Aes(string plainText, string password)
     {
         byte[] encrypted;
@@ -181,7 +174,6 @@ public class SensorData : MonoBehaviour
                 }
             }
         }
-
         return encrypted;
     }
 }

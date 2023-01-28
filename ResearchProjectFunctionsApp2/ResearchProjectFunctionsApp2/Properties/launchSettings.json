@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ResearchProjectFunctionsApp2": {
+      "commandName": "Project",
+      "commandLineArgs": "host start --port 7065"
+    }
+  }
+}

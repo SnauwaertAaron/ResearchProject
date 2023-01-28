@@ -5,7 +5,6 @@ using UnityEngine;
 public class DroneMovementScript : MonoBehaviour
 {
     Rigidbody drone;
-    private float tiltAmountSideways;
 
     void Awake(){
         drone = GetComponent<Rigidbody>();
@@ -21,7 +20,7 @@ public class DroneMovementScript : MonoBehaviour
         // Make drone hover
         drone.AddRelativeForce(Vector3.up * upForce);
         drone.rotation = Quaternion.Euler(
-            new Vector3(tiltAmount, currentYRotation, tiltAmountSideways)
+            new Vector3(tiltAmount, currentYRotation, 0)
             );
     }
 
@@ -31,7 +30,7 @@ public class DroneMovementScript : MonoBehaviour
             upForce = 9000;
         }
         else if (Input.GetKey(KeyCode.DownArrow)){
-            upForce = -4000;
+            upForce = -9000;
         }
         else if (!Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow)){
             upForce = 98.1f;
@@ -77,10 +76,10 @@ public class DroneMovementScript : MonoBehaviour
     private Vector3 velocityToSmoothDampToZero;
     void ClampingSpeedValues() {
         if (Input.GetKey(KeyCode.Z)) {
-            drone.velocity = Vector3.ClampMagnitude(drone.velocity, Mathf.Lerp(drone.velocity.magnitude, 1000.0f, Time.deltaTime * 5f));
+            drone.velocity = Vector3.ClampMagnitude(drone.velocity, Mathf.Lerp(drone.velocity.magnitude, 2000.0f, Time.deltaTime * 5f));
         }
         else if (Input.GetKey(KeyCode.S)) {
-            drone.velocity = Vector3.ClampMagnitude(drone.velocity, Mathf.Lerp(drone.velocity.magnitude, 1000.0f, Time.deltaTime * 5f));
+            drone.velocity = Vector3.ClampMagnitude(drone.velocity, Mathf.Lerp(drone.velocity.magnitude, 2000.0f, Time.deltaTime * 5f));
         }
         if (Input.GetKey(KeyCode.Q)) {
             drone.velocity = Vector3.ClampMagnitude(drone.velocity, Mathf.Lerp(drone.velocity.magnitude, 1000.0f, Time.deltaTime * 5f));
@@ -90,11 +89,11 @@ public class DroneMovementScript : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            drone.velocity = Vector3.ClampMagnitude(drone.velocity, Mathf.Lerp(drone.velocity.magnitude, 100.0f, Time.deltaTime * 5f));
+            drone.velocity = Vector3.ClampMagnitude(drone.velocity, Mathf.Lerp(drone.velocity.magnitude, 500.0f, Time.deltaTime * 5f));
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            drone.velocity = Vector3.ClampMagnitude(drone.velocity, Mathf.Lerp(drone.velocity.magnitude, 100.0f, Time.deltaTime * 5f));
+            drone.velocity = Vector3.ClampMagnitude(drone.velocity, Mathf.Lerp(drone.velocity.magnitude, 500.0f, Time.deltaTime * 5f));
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
